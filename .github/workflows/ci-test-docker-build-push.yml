@@ -1,0 +1,46 @@
+name: Test Docker Build and Push
+
+on:
+  push:
+    branches-ignore:
+      - master
+
+jobs:
+  dockerBuildPush:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v1
+      - name: Capture environment variables
+        run: printenv
+      - name: Build Docker Image
+        id: build_docker_image
+        run: |
+          make \
+            IMAGE_TAG=0.0.1 \
+            STEP_1_IMAGE="alpine:3.12" \
+            JDK_VERSION=8.252.09-r0 \
+            AGENT_VERSION=3.0.2 \
+            docker-build
+  logDockerBuildPush:
+    needs: dockerBuildPush
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - name: Set Variables With Build Info
+        id: job_info
+        run: |
+          curl -v -L -u runner:${{ secrets.GITHUB_TOKEN }} -o job_info.json https://api.github.com/repos/${GITHUB_REPOSITORY}/actions/runs/${{ github.run_id }}/jobs
+          echo ::set-output name=log_url::$(cat job_info.json | jq --raw-output '.jobs | .[0] | .url')
+          echo ::set-output name=html_url::$(cat job_info.json | jq --raw-output '.jobs | .[0] | .html_url')
+          echo ::set-output name=status::$(cat job_info.json | jq --raw-output '.jobs | .[0] | .conclusion')
+          echo ::set-output name=branch_name::$(echo ${GITHUB_REF##*/})
+          echo ::set-output name=repo_name::$(echo ${GITHUB_REPOSITORY##*/})
+      - name: Generate log file
+        run: curl -v -L -u runner:${{ secrets.GITHUB_TOKEN }} -o build_logs.txt ${{ steps.job_info.outputs.log_url }}/logs
+      - name: Persisting log
+        id: persisting_log
+        if: always()
+        uses: actions/upload-artifact@v1
+        with:
+          name: workflow_log
+          path: build_logs.txt
