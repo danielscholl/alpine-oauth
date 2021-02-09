@@ -33,7 +33,10 @@ CLIENT_ID=$CLIENT_ID
 CLIENT_SECRET=$CLIENT_SECRET
 
 EOF
-docker run -it --env-file .env-scholl alpine-oauth:latest --operation client_credentials
+
+# Execute OAuth Commands
+docker run -it --env-file .env alpine-oauth:latest --operation get_oidc_server_infos
+docker run -it --env-file .env alpine-oauth:latest --operation client_credentials
 ```
 
 
