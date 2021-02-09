@@ -34,19 +34,19 @@ jobs:
             AGENT_VERSION=3.0.2
           file: Dockerfile
           tags: |
-            danielscholl/alpine-openjdk:latest
-            danielscholl/alpine-openjdk:${{ steps.get_tag_name.outputs.tag_name }}
+            danielscholl/alpine-oauth:latest
+            danielscholl/alpine-oauth:${{ steps.get_tag_name.outputs.tag_name }}
       - name: Push to docker hub
         run: |
-          docker push danielscholl/alpine-openjdk:latest
-          docker push danielscholl/alpine-openjdk:${{ steps.get_tag_name.outputs.tag_name }}
+          docker push danielscholl/alpine-oauth:latest
+          docker push danielscholl/alpine-oauth:${{ steps.get_tag_name.outputs.tag_name }}
       - name: Update Docker Hub Description
         uses: peter-evans/dockerhub-description@v2.4.1
         if: success()
         with:
           username: ${{ secrets.DOCKER_HUB_USERNAME }}
           password: ${{ secrets.DOCKER_HUB_PASSWORD }}
-          repository: danielscholl/alpine-openjdk
+          repository: danielscholl/alpine-oauth
           readme-filepath: Readme.md
   logDockerBuildPush:
     needs: dockerBuildPush

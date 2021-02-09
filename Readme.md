@@ -35,6 +35,6 @@ CLIENT_SECRET=$CLIENT_SECRET
 
 EOF
 
-docker run -it --env-file .env alpine-oauth:latest get_oidc_server_infos
-docker run -it --env-file .env alpine-oauth:latest client_credentials
+docker run --env-file .env danielscholl/alpine-oauth:latest get_oidc_server_infos
+docker run --env-file .env danielscholl/alpine-oauth:latest client_credentials
 ```
