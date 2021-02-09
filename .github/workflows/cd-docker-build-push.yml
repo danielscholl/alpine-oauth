@@ -30,8 +30,6 @@ jobs:
           build-args: |
             IMAGE_TAG=0.0.1
             STEP_1_IMAGE=alpine:3.12
-            JDK_VERSION=8.252.09-r0
-            AGENT_VERSION=3.0.2
           file: Dockerfile
           tags: |
             danielscholl/alpine-oauth:latest
